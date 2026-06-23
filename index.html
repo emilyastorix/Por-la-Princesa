@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Por la Princesa!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0a0a0a;
+      --paper:     #f5f0e8;
+      --gold:      #c9a84c;
+      --gold-dim:  #8a6b2a;
+      --parchment: #ede0c4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Crimson Pro', Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════
+       TITLE SCREEN  (untouched)
+    ══════════════════════════════════ */
+    #screen-title {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    #screen-title::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, #1a0a2e 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, #1c0a0a 0%, transparent 50%),
+        var(--ink);
+      z-index: 0;
+    }
+
+    .stars { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--dur, 3s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.8); }
+      50%       { opacity: var(--bright, 0.7); transform: scale(1.1); }
+    }
+
+    .title-frame {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      animation: fadeInDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ornament { display: flex; align-items: center; gap: 1rem; width: 100%; opacity: 0.65; }
+    .ornament-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+    .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+
+    .subtitle-badge {
+      font-family: 'Crimson Pro', serif;
+      font-size: clamp(0.75rem, 2vw, 0.9rem);
+      font-style: italic;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.8;
+    }
+
+    .main-title {
+      font-family: 'Cinzel Decorative', cursive;
+      font-weight: 900;
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      line-height: 1.05;
+      color: var(--paper);
+      text-shadow:
+        0 0 40px rgba(201,168,76,0.4),
+        0 2px 0 var(--gold-dim),
+        0 4px 12px rgba(0,0,0,0.8);
+      letter-spacing: 0.02em;
+    }
+
+    .main-title .exclamation {
+      color: var(--gold);
+      display: inline-block;
+      animation: pulse-gold 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-gold {
+      0%, 100% { text-shadow: 0 0 20px rgba(201,168,76,0.3); }
+      50%       { text-shadow: 0 0 50px rgba(201,168,76,0.9), 0 0 80px rgba(201,168,76,0.4); }
+    }
+
+    .episode-tag {
+      font-family: 'Crimson Pro', serif;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--parchment);
+      opacity: 0.55;
+    }
+
+    .btn-start {
+      position: relative;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--gold) 0%, #e8c96a 45%, var(--gold) 100%);
+      border: none;
+      padding: 1rem 3rem;
+      cursor: pointer;
+      clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      animation: fadeInUp 1.4s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+      display: inline-block;
+    }
+
+    .btn-start::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0% calc(100% - 10px), 0% 10px);
+      background: linear-gradient(135deg, #e8c96a 0%, var(--gold) 100%);
+      opacity: 0.4;
+    }
+
+    .btn-start:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 30px rgba(201,168,76,0.5); filter: brightness(1.1); }
+    .btn-start:active { transform: translateY(0) scale(0.98); }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .contact-strip {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.2rem 2rem;
+      border-top: 1px solid rgba(201,168,76,0.15);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      animation: fadeInUp 1.6s 0.7s ease both;
+      flex-wrap: wrap;
+    }
+
+    .contact-strip a,
+    .contact-strip span {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: rgba(245,240,232,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-strip a:hover { color: var(--gold); }
+
+    .contact-dot { width: 3px; height: 3px; background: var(--gold-dim); border-radius: 50%; opacity: 0.4; }
+
+    /* ══════════════════════════════════
+       READER SCREEN
+    ══════════════════════════════════ */
+    #screen-reader {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      background: var(--ink);
+    }
+
+    #screen-reader.active { display: flex; }
+
+    /* Top bar */
+    .reader-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1.5rem;
+      background: rgba(10,10,10,0.92);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      backdrop-filter: blur(8px);
+      gap: 1rem;
+    }
+
+    .reader-bar-title {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(0.75rem, 2vw, 0.95rem);
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .reader-bar-progress {
+      flex: 1;
+      max-width: 300px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--gold-dim), var(--gold));
+      border-radius: 2px;
+      transition: width 0.6s ease;
+      width: 0%;
+    }
+
+    .reader-bar-counter {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      color: rgba(245,240,232,0.45);
+      white-space: nowrap;
+    }
+
+    .btn-back {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.5);
+      background: none;
+      border: 1px solid rgba(245,240,232,0.15);
+      padding: 0.35rem 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-back:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+    /* ══════════════════════════════════
+       SCREEN SLIDES (each = one "page" of the comic)
+    ══════════════════════════════════ */
+    #reader-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 56px);
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* The two-panel row — mirrors the PDF layout */
+    .panel-row {
+      display: flex;
+      gap: 16px;                  /* gutter between panels, like the black space in the PDF */
+      width: 100%;
+      max-width: 1100px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    /* Each individual viñeta wrapper */
+    .panel-slot {
+      flex: 1;
+      min-width: 0;
+      /* Hidden until triggered */
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.85s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .panel-slot.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Full-width panel (single image that spans both columns) */
+    .panel-slot.full-width {
+      flex: none;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .panel-slot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Casi pantalla completa: imagen grande, centrada, limitada por alto de viewport */
+    .panel-slot.size-full {
+      flex: none;
+      width: 100%;
+      max-width: 1400px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .panel-slot.size-full img {
+      width: auto;
+      height: auto;
+      max-height: 88vh;
+      max-width: 100%;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    /* Más pequeña (ej. página final) */
+    .panel-slot.size-small {
+      flex: none;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Tamaño intermedio (un poco más chica que el ancho completo) */
+    .panel-slot.size-medium {
+      flex: none;
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* Filas apiladas: imágenes una encima de otra en vez de lado a lado */
+    .panel-row.stack {
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .panel-row.stack .panel-slot {
+      flex: none;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    /* ══════════════════════════════════
+       PANEO (pag18: planeos izq/der/arriba/abajo)
+    ══════════════════════════════════ */
+    .pan-wrap {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.85s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .pan-wrap.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pan-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4; /* se ajusta al cargar la imagen central */
+      overflow: hidden;
+      background: #0d0d0d;
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .pan-inner {
+      position: absolute;
+      inset: 0;
+      transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+      transform: translate(0, 0);
+    }
+
+    .pan-tile {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pan-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pan-tile.pan-center { transform: translate(0, 0); }
+    .pan-tile.pan-left   { transform: translate(-100%, 0); }
+    .pan-tile.pan-right  { transform: translate(100%, 0); }
+    .pan-tile.pan-up     { transform: translate(0, -100%); }
+    .pan-tile.pan-down   { transform: translate(0, 100%); }
+
+    .pan-tile .panel-placeholder {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ── Efectos especiales por panel ──
+       Se activan agregando la clase correspondiente
+       en EFFECTS[index] dentro del array SCREENS. */
+
+    /* Brillo dorado pulsante (momento mágico / revelación) */
+    .panel-slot.fx-glow.visible img {
+      animation: fxGlow 2.4s ease-in-out infinite;
+    }
+    @keyframes fxGlow {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(201,168,76,0)); }
+      50%       { filter: brightness(1.08) drop-shadow(0 0 28px rgba(201,168,76,0.55)); }
+    }
+
+    /* Sacudida (impacto, golpe, susto) */
+    .panel-slot.fx-shake.visible img {
+      animation: fxShake 0.5s ease-in-out 1;
+    }
+    @keyframes fxShake {
+      0%, 100% { transform: translate(0, 0); }
+      20%      { transform: translate(-6px, 2px); }
+      40%      { transform: translate(5px, -3px); }
+      60%      { transform: translate(-4px, 3px); }
+      80%      { transform: translate(3px, -2px); }
+    }
+
+    /* Zoom dramático de entrada (clímax) */
+    .panel-slot.fx-zoom { transform: scale(0.85) translateY(24px); }
+    .panel-slot.fx-zoom.visible {
+      transform: scale(1) translateY(0);
+      transition: opacity 1s cubic-bezier(0.16,1,0.3,1),
+                  transform 1s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* Tinte rojo (peligro / tensión) */
+    .panel-slot.fx-danger.visible img {
+      animation: fxDanger 1.8s ease-in-out infinite;
+    }
+    @keyframes fxDanger {
+      0%, 100% { filter: saturate(1) brightness(1); }
+      50%       { filter: saturate(1.4) brightness(0.92) hue-rotate(-6deg); }
+    }
+
+    /* Placeholder when image is missing */
+    .panel-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      border: 1px dashed #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    /* ── Next / End buttons ── */
+    .nav-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.5rem;
+      /* starts invisible, fades in after panels */
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .nav-row.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .btn-next {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--gold) 0%, #e8c96a 45%, var(--gold) 100%);
+      border: none;
+      padding: 0.85rem 2.5rem;
+      cursor: pointer;
+      clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0% calc(100% - 10px), 0% 10px);
+      transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-next:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 6px 24px rgba(201,168,76,0.4); }
+    .btn-next:active { transform: translateY(0); }
+
+    .btn-prev {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      background: none;
+      border: 1px solid var(--gold-dim);
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      margin-right: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-prev:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+
+    .btn-back-home {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      background: none;
+      border: 1px solid var(--gold-dim);
+      padding: 0.85rem 2.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back-home:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+
+    /* End-of-chapter decoration */
+    .end-ornament {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .end-ornament h2 {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .end-ornament p {
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+      color: rgba(245,240,232,0.45);
+    }
+
+    @media (max-width: 600px) {
+      .panel-row { gap: 8px; }
+      .contact-strip { gap: 1rem; }
+      .contact-dot { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — TITLE  (no tocar)
+══════════════════════════════════════════ -->
+<section id="screen-title">
+
+  <div class="stars" id="stars-bg"></div>
+
+  <div class="title-frame">
+    <span class="subtitle-badge">Un webcomic de Astor Emily</span>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+
+    <h1 class="main-title">
+      Por la<br>Princesa<span class="exclamation"> !</span>
+    </h1>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+
+    <span class="episode-tag">Capítulo 1</span>
+
+    <button class="btn-start" onclick="startComic()">
+      ✦ &nbsp; Iniciar &nbsp; ✦
+    </button>
+  </div>
+
+  <footer class="contact-strip">
+    <span>© 2026 Por la Princesa</span>
+    <div class="contact-dot"></div>
+    <a href="mailto:astoremily23@gmail.com">astoremily23@gmail.com</a>
+    <div class="contact-dot"></div>
+    <a href="https://www.instagram.com/astoremily23/" target="_blank">Instagram</a>
+    <div class="contact-dot"></div>
+    <a href="https://x.com/AstorEmily23" target="_blank">Twitter / X</a>
+  </footer>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — READER
+══════════════════════════════════════════ -->
+<section id="screen-reader">
+
+  <div class="reader-bar">
+    <button class="btn-back" onclick="goHome()">← Inicio</button>
+    <div class="reader-bar-progress">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <span class="reader-bar-counter" id="reader-counter"></span>
+    <span class="reader-bar-title">Por la Princesa !</span>
+  </div>
+
+  <!-- The active "slide" renders here -->
+  <div id="reader-stage"></div>
+
+</section>
+
+
+<script>
+  /* ════════════════════════════════════════
+     COMIC STRUCTURE
+     Cada entrada es una "pantalla" (slide), compuesta por una o
+     más FILAS ("rows"). Cada fila tiene:
+
+       srcs:         array de imágenes en esa fila (1 = ancha, 2 = lado a lado)
+       effects:      (opcional) array paralelo a "srcs" con la clase de
+                     efecto especial para cada imagen.
+                     Clases disponibles: 'fx-glow' (brillo mágico),
+                     'fx-shake' (sacudida/impacto), 'fx-zoom' (entrada
+                     dramática), 'fx-danger' (tinte de tensión/peligro).
+                     Deja '' si esa imagen no lleva efecto.
+       size:         'normal' (default) o 'full' → imagen casi pantalla
+                     completa (usado para portadas, splash pages, etc.)
+       simultaneous: true  → todas las imágenes de la fila aparecen JUNTAS
+                     false (default) → aparecen una tras otra (stagger)
+
+     Si una pantalla tiene varias filas, cada fila se revela DESPUÉS
+     de que termine de aparecer la fila anterior. El botón "Siguiente"
+     solo se habilita cuando TODA la pantalla (todas sus filas) ya
+     se mostró por completo.
+  ════════════════════════════════════════ */
+  const SCREENS = [
+    /* ── Intro: I aparece casi a pantalla completa ── */
+    { rows: [
+        { srcs: ['I.png'], size: 'full' },
+      ]
+    },
+
+    { rows: [ { srcs: ['pag1.png', 'pag2.png'] } ] },
+    { rows: [ { srcs: ['pag3.png'] } ] },
+    { rows: [ { srcs: ['pag4 5.png'] } ] },           /* pág 4 y 5 combinadas */
+    { rows: [ { srcs: ['pag6.png'] } ] },
+
+    /* ── Splash casi pantalla completa entre pág 6 y 7 ── */
+    { rows: [ { srcs: ['67.png'], size: 'full' } ] },
+
+    { rows: [ { srcs: ['pag7.png'], size: 'medium' } ] },
+    { rows: [ { srcs: ['pag8.png'] } ] },
+    { rows: [ { srcs: ['pag9.png',  'pag10.png'], stack: true } ] },
+    { rows: [ { srcs: ['pag10.png', 'pag11.png'], stack: true } ] },
+    { rows: [ { srcs: ['pag12.png'] } ] },
+    { rows: [ { srcs: ['pag13.png', 'pag14.png'] } ] },
+    { rows: [ { srcs: ['pag15.png'] } ] },
+    { rows: [ { srcs: ['pag16.png', 'pag17.png'] } ] },
+
+    /* ── Pág 18: paneo a izquierda (pag181), centro, derecha (pag182),
+       centro, arriba (pag183), centro, abajo (pag184), centro ── */
+    { pan: {
+        center: 'pag18.png',
+        left:   'pag181.png',
+        right:  'pag182.png',
+        up:     'pag183.png',
+        down:   'pag184.png',
+      }
+    },
+
+    { rows: [ { srcs: ['pag19.png'] } ] },
+    { rows: [ { srcs: ['pag20.png', 'pag21.png'] } ] },
+    { rows: [ { srcs: ['pag22.png', 'pag23.png', 'pag24.png'], stack: true } ] },
+    { rows: [ { srcs: ['pag25.png', 'pag26.png'] } ] },
+    { rows: [ { srcs: ['pag27.png'], size: 'small' } ] },
+  ];
+
+  let currentScreen = 0;
+
+  /* ── Starfield ── */
+  (function buildStars() {
+    const container = document.getElementById('stars-bg');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        left:${Math.random()*100}%; top:${Math.random()*100}%;
+        width:${size}px; height:${size}px;
+        --dur:${(Math.random()*4+2).toFixed(1)}s;
+        --delay:${(Math.random()*5).toFixed(1)}s;
+        --bright:${(Math.random()*0.5+0.3).toFixed(2)};
+      `;
+      container.appendChild(s);
+    }
+  })();
+
+  /* ── Transitions ── */
+  function startComic() {
+    const title  = document.getElementById('screen-title');
+    const reader = document.getElementById('screen-reader');
+    title.style.transition = 'opacity 0.6s ease';
+    title.style.opacity = '0';
+    setTimeout(() => {
+      title.style.display = 'none';
+      currentScreen = 0;
+      reader.classList.add('active');
+      renderScreen(currentScreen);
+      window.scrollTo(0, 0);
+    }, 600);
+  }
+
+  function goHome() {
+    const title  = document.getElementById('screen-title');
+    const reader = document.getElementById('screen-reader');
+    reader.classList.remove('active');
+    title.style.display = '';
+    title.style.opacity = '0';
+    requestAnimationFrame(() => {
+      title.style.transition = 'opacity 0.6s ease';
+      title.style.opacity = '1';
+    });
+    window.scrollTo(0, 0);
+  }
+
+  /* ── Progress bar + contador ── */
+  function updateProgress(screenIndex) {
+    const pct = Math.round(((screenIndex + 1) / SCREENS.length) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('reader-counter').textContent =
+      `${screenIndex + 1} / ${SCREENS.length}`;
+  }
+
+  /* ── Render a screen ── */
+  function renderScreen(index) {
+    const stage  = document.getElementById('reader-stage');
+    const screen = SCREENS[index];
+
+    stage.innerHTML = ''; // clear
+
+    updateProgress(index);
+
+    /* Nav button row (se construye primero, se agrega al final del stage) */
+    const isLast = index >= SCREENS.length - 1;
+    const navRow = document.createElement('div');
+    navRow.className = 'nav-row';
+
+    if (isLast) {
+      navRow.innerHTML = `
+        <div style="text-align:center">
+          <div class="end-ornament">
+            <div class="ornament" style="margin-bottom:1.2rem;opacity:.5">
+              <div class="ornament-line"></div>
+              <div class="ornament-diamond"></div>
+              <div class="ornament-line"></div>
+            </div>
+            <h2>Fin del capítulo</h2>
+            <p>Continuará...</p>
+          </div>
+          <button class="btn-prev" id="btn-prev-end">‹ Anterior</button>
+          <button class="btn-back-home" onclick="goHome()">← Volver al inicio</button>
+        </div>`;
+    } else {
+      if (index > 0) {
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'btn-prev';
+        prevBtn.textContent = '‹ Anterior';
+        prevBtn.onclick = () => prevScreen();
+        navRow.appendChild(prevBtn);
+      }
+      const btn = document.createElement('button');
+      btn.className = 'btn-next';
+      btn.textContent = 'Siguiente ›';
+      btn.onclick = () => nextScreen();
+      navRow.appendChild(btn);
+    }
+
+    window.scrollTo(0, 0);
+
+    if (screen.pan) {
+      /* ── Pantalla especial de paneo (ej. pag18) ── */
+      buildPanScreen(stage, screen, navRow);
+      stage.appendChild(navRow);
+    } else {
+      /* ── Pantalla normal basada en filas ── */
+      const rowGroups = [];
+
+      screen.rows.forEach((rowDef) => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'panel-row' + (rowDef.stack ? ' stack' : '');
+
+        const slots = rowDef.srcs.map((src, i) => {
+          const slot = document.createElement('div');
+
+          let sizeClass = '';
+          if (rowDef.size === 'full') sizeClass = ' size-full';
+          else if (rowDef.size === 'small') sizeClass = ' size-small';
+          else if (rowDef.size === 'medium') sizeClass = ' size-medium';
+          else if (rowDef.stack) sizeClass = '';
+          else if (rowDef.srcs.length === 1) sizeClass = ' full-width';
+
+          const fx = (rowDef.effects && rowDef.effects[i]) ? ' ' + rowDef.effects[i] : '';
+          slot.className = 'panel-slot' + sizeClass + fx;
+
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = src;
+
+          img.onerror = function() {
+            this.remove();
+            const ph = document.createElement('div');
+            ph.className = 'panel-placeholder';
+            ph.textContent = `[ ${src} — pendiente ]`;
+            slot.appendChild(ph);
+          };
+
+          slot.appendChild(img);
+          rowEl.appendChild(slot);
+          return slot;
+        });
+
+        stage.appendChild(rowEl);
+        rowGroups.push({ slots, simultaneous: !!rowDef.simultaneous });
+      });
+
+      stage.appendChild(navRow);
+
+      revealRows(rowGroups, navRow);
+    }
+
+    /* Wire up prev button on last screen (added via innerHTML) */
+    const prevEnd = document.getElementById('btn-prev-end');
+    if (prevEnd) prevEnd.onclick = () => prevScreen();
+  }
+
+  /* ── Pantalla de paneo: imagen central + 4 vistas (izq/der/arriba/abajo) ──
+     Secuencia automática: centro → izq → centro → der → centro →
+     arriba → centro → abajo → centro. Recién al terminar se habilita
+     el botón "Siguiente". ── */
+  function buildPanScreen(stage, screen, navRow) {
+    const def = screen.pan;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'pan-wrap';
+
+    const viewport = document.createElement('div');
+    viewport.className = 'pan-viewport';
+
+    const inner = document.createElement('div');
+    inner.className = 'pan-inner';
+
+    function makeTile(src, posClass) {
+      const tile = document.createElement('div');
+      tile.className = 'pan-tile ' + posClass;
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = src;
+      img.onerror = function() {
+        this.remove();
+        const ph = document.createElement('div');
+        ph.className = 'panel-placeholder';
+        ph.textContent = `[ ${src} — pendiente ]`;
+        tile.appendChild(ph);
+      };
+      tile.appendChild(img);
+      return tile;
+    }
+
+    const centerTile = makeTile(def.center, 'pan-center');
+    const leftTile   = makeTile(def.left,   'pan-left');
+    const rightTile  = makeTile(def.right,  'pan-right');
+    const upTile      = makeTile(def.up,     'pan-up');
+    const downTile    = makeTile(def.down,   'pan-down');
+
+    inner.append(leftTile, upTile, downTile, rightTile, centerTile);
+    viewport.appendChild(inner);
+    wrap.appendChild(viewport);
+    stage.appendChild(wrap);
+
+    /* Ajustar la proporción del viewport a la imagen central una vez cargada */
+    const centerImg = centerTile.querySelector('img');
+    function applyAspect() {
+      if (centerImg && centerImg.naturalWidth && centerImg.naturalHeight) {
+        viewport.style.aspectRatio = centerImg.naturalWidth + ' / ' + centerImg.naturalHeight;
+      }
+    }
+    if (centerImg) {
+      if (centerImg.complete) applyAspect();
+      else centerImg.addEventListener('load', applyAspect);
+    }
+
+    /* Fade-in inicial del bloque completo */
+    requestAnimationFrame(() => {
+      setTimeout(() => wrap.classList.add('visible'), 150);
+    });
+
+    /* Secuencia de paneo */
+    const ENTRY_DELAY = 150 + 850 + 300; // espera el fade-in inicial
+    const HOLD     = 1000; // tiempo mostrando cada vista antes de continuar
+    const PAN_DUR  = 1100; // debe coincidir con la transición CSS de .pan-inner
+
+    function panTo(dir, atTime) {
+      setTimeout(() => {
+        let tx = '0', ty = '0';
+        if (dir === 'left')  tx = '100%';
+        if (dir === 'right') tx = '-100%';
+        if (dir === 'up')    ty = '100%';
+        if (dir === 'down')  ty = '-100%';
+        inner.style.transform = `translate(${tx}, ${ty})`;
+      }, atTime);
+    }
+
+    function panHome(atTime) {
+      setTimeout(() => { inner.style.transform = 'translate(0, 0)'; }, atTime);
+    }
+
+    let t = ENTRY_DELAY;
+    panTo('left', t);   t += PAN_DUR + HOLD;
+    panHome(t);          t += PAN_DUR + HOLD;
+    panTo('right', t);  t += PAN_DUR + HOLD;
+    panHome(t);          t += PAN_DUR + HOLD;
+    panTo('up', t);     t += PAN_DUR + HOLD;
+    panHome(t);          t += PAN_DUR + HOLD;
+    panTo('down', t);   t += PAN_DUR + HOLD;
+    panHome(t);          t += PAN_DUR + HOLD;
+
+    setTimeout(() => navRow.classList.add('visible'), t);
+  }
+
+  /* ── Reveal secuencial de filas; dentro de cada fila, simultáneo o stagger ── */
+  function revealRows(rowGroups, navRow) {
+    const DELAY_FIRST   = 200;  // ms antes de que aparezca lo primero
+    const DELAY_BETWEEN = 900;  // ms entre imágenes dentro de una fila (modo stagger)
+    const ROW_GAP        = 400; // ms de pausa extra entre una fila y la siguiente
+
+    let t = DELAY_FIRST;
+
+    rowGroups.forEach((rowGroup) => {
+      if (rowGroup.simultaneous) {
+        const thisT = t;
+        rowGroup.slots.forEach((slot) => {
+          setTimeout(() => slot.classList.add('visible'), thisT);
+        });
+        t = thisT + 850 + ROW_GAP;
+      } else {
+        rowGroup.slots.forEach((slot, i) => {
+          setTimeout(() => slot.classList.add('visible'), t + i * DELAY_BETWEEN);
+        });
+        t = t + rowGroup.slots.length * DELAY_BETWEEN + ROW_GAP;
+      }
+    });
+
+    // El botón de navegación aparece solo cuando TODA la pantalla ya se mostró
+    setTimeout(() => {
+      navRow.classList.add('visible');
+    }, t);
+  }
+
+  /* ── Go to next screen ── */
+  function nextScreen() {
+    if (currentScreen >= SCREENS.length - 1) return;
+
+    const stage = document.getElementById('reader-stage');
+
+    // Quick fade-out current content
+    stage.style.transition = 'opacity 0.35s ease';
+    stage.style.opacity = '0';
+
+    setTimeout(() => {
+      currentScreen++;
+      stage.style.transition = '';
+      stage.style.opacity = '1';
+      renderScreen(currentScreen);
+    }, 350);
+  }
+
+  /* ── Go to previous screen ── */
+  function prevScreen() {
+    if (currentScreen <= 0) return;
+
+    const stage = document.getElementById('reader-stage');
+
+    stage.style.transition = 'opacity 0.35s ease';
+    stage.style.opacity = '0';
+
+    setTimeout(() => {
+      currentScreen--;
+      stage.style.transition = '';
+      stage.style.opacity = '1';
+      renderScreen(currentScreen);
+    }, 350);
+  }
+</script>
+
+</body>
+</html>
